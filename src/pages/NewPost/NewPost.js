@@ -32,7 +32,7 @@ export default function NewPost() {
     return (
         <Page>
             <Top>
-                <MyLogo />
+                <MyLogo onClick={() => navigate("/home-page")}/>
                 <Options>
                     <OptionLink  onClick={() => navigate("/home-page")}>Início</OptionLink>
                     <ExitIcon onClick={()=> handleLogout(token, setName, setToken, navigate)}/>
