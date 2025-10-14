@@ -1,6 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import SignupPage from "./pages/SignupPage";
-import SigninPage from "./pages/SigninPage";
 import HomePage from "./pages/HomePage/HomePage";
 import NewPost from "./pages/NewPost/NewPost";
 import MyFollowersPage from "./pages/MyFollowers/MyFollowers";
@@ -8,6 +6,8 @@ import AnotherUsersProfile from "./pages/AnotherUsersProfile/AnotherUsersProfile
 import FollowingPage from "./pages/MyFollowers/FollowingPage";
 import { useState } from "react";
 import { UserContext } from "./contexts/UserContext";
+import SigninPage from "./pages/registrationAndLogin/SigninPage";
+import SignupPage from "./pages/registrationAndLogin/SignupPage";
 
 export default function App() {
   const [name, setName] = useState(localStorage.getItem("name"));

@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { FaFacebookF } from "react-icons/fa6";
 
-export default function Logo() {
+export default function Logo({onClick}) {
     return (
-            <MyLogo>
+            <MyLogo onClick={onClick} >
                 <FacebookIcon />
                 <h1>omebook</h1>
             </MyLogo>
@@ -18,7 +18,7 @@ const MyLogo = styled.div`
     font-weight: 700;
     font-size: 60px;
     color: #0864f7;
-    
+    cursor: pointer;    
 `;
 
 const FacebookIcon = styled(FaFacebookF)`

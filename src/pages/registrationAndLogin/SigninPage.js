@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import styled from "styled-components";
-import MyLogo from "../components/Logo";
+import MyLogo from "../../components/Logo";
 import { useNavigate } from "react-router";
-import { UserContext } from "../contexts/UserContext";
-import apiAuth from "../services/apiAuth";
+import { UserContext } from "../../contexts/UserContext";
+import apiAuth from "../../services/apiAuth";
+import { Page, Top, Options, OptionLink, InputWrapper } from "./styled";
 
 
 export default function SigninPage() {
@@ -70,45 +70,6 @@ export default function SigninPage() {
             </form>
         </Page>
     );
-}
+};
 
-const Page = styled.div`
-    background-color: white;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
 
-`;
-
-const Top = styled.div`
-    background-color: #dbe6f8ff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 90px;
-    width: 100%;
-    border: 1px solid #aec8f1ff;
-    position: fixed;
-    top: 0;
-    left: 0;
-`;
-
-const Options = styled.div`
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    position: fixed;
-    right: 60px;
-    top: 20px;
-`;
-
-const OptionLink = styled.h5`
-    cursor: pointer;
-    color: ${props => props.$primary === false ? '#777' : ''};
-`;
-
-const InputWrapper = styled.div`
-    position: relative;
-    width: 769px;
-    height: 60px;
-`;
