@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import MyLogo from "../../components/Logo";
 import { useNavigate } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
 import apiAuth from "../../services/apiAuth";
-import { Page, Top, Options, OptionLink, InputWrapper } from "./styled";
+import { Page, InputWrapper, Left, ContanerLogin } from "./styled";
+import Logo from "../../components/LogoAndSlogan";
 
 
 export default function SigninPage() {
@@ -33,43 +33,44 @@ export default function SigninPage() {
 
     return (
         <Page>
-            <Top>
-                <MyLogo />
-                <Options>
-                    <OptionLink onClick={() => navigate("/")}>Entrar</OptionLink>
-                    <OptionLink onClick={() => navigate("/signup-page")} $primary={false}>Cadastrar</OptionLink>
-                </Options>
-            </Top>
+            <Left>
+                <Logo />
+            </Left>
+            <ContanerLogin>
+                <form onSubmit={handleLogin}>
+                    <h2>Login</h2>
+                    <InputWrapper>
+                        <input
+                            type="email"
+                            autoComplete="username"
+                            required
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                        />
+                        <label className={email ? "filled" : ""}>E-mail:</label>
+                    </InputWrapper>
 
-            <form onSubmit={handleLogin}>
-                <h2>Login</h2>
-                <InputWrapper>
-                    <input
-                        type="email"
-                        autoComplete="username"
-                        required
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                    />
-                    <label className={email ? "filled" : ""}>E-mail:</label>
-                </InputWrapper>
+                    <InputWrapper>
+                        <input
+                            type="password"
+                            autoComplete="new-password"
+                            required
+                            minLength={3}
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                        />
+                        <label className={password ? "filled" : ""}>Senha:</label>
+                    </InputWrapper>
 
-                <InputWrapper>
-                    <input
-                        type="password"
-                        autoComplete="new-password"
-                        required
-                        minLength={3}
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                    <label className={password ? "filled" : ""}>Senha:</label>
-                </InputWrapper>
+                    <button type="submit">ENTRAR</button>
+                    <p onClick={() => navigate("/signup-page")}>Primeira vez? Crie uma conta!</p>
+                </form>
+            </ContanerLogin>
 
-                <button type = "submit">ENTRAR</button>
-            </form>
         </Page>
     );
 };
+
+
 
 

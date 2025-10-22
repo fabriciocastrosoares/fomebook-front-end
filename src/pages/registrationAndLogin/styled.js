@@ -1,12 +1,10 @@
 import styled from "styled-components";
 
-
 export const Page = styled.div`
     background-color: white;
     display: flex;
-    align-items: center;
-    flex-direction: column;
-
+    height: 100%;
+    width: 100%;
 `;
 
 export const Top = styled.div`
@@ -38,9 +36,21 @@ export const OptionLink = styled.h5`
     color: ${props => props.$primary === false ? '#777' : ''};
 `;
 
+export const Left = styled.div`
+    background-color: #c2d7f8ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 70%;
+    height: 100%;
+`;
+
+
 export const InputWrapper = styled.div`
     position: relative;
-    width: 769px;
+    width: 400px;
     height: ${props => props.$isBig ? "120px" : "60px"};
     textarea:focus + label {
         top: 6px;
@@ -64,4 +74,14 @@ export const TextArea = styled.textarea`
     outline: none;
     resize: none; 
     &:focus { border-color: #0864f7; }
+`;
+
+export const ContanerLogin = styled.div`
+     background-color: #dbe6f8ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 40%;
+      gap: 25px;
 `;

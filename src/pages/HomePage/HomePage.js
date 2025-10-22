@@ -4,10 +4,19 @@ import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import apiUsers from "../../services/apiUsers";
 import dayjs from 'dayjs';
-import { Page, Top, Options } from "../registrationAndLogin/styled";
-import { AddPostIcon, DateContainer, Description, ExitIcon, FollowStats, IoHeartFilledStyled, IoHeartOutlineStyled, LikeAndDate, LikeImage, MyPage, MyPosts, NameBio, PostImage, SearchContainer, SearchIcon, SearchInput, SearchResultItem, SearchResultsList, SearchWrapper, Stat, UserImage } from "./styled";
+import { Top, Options } from "../registrationAndLogin/styled";
+import {
+    Page, AddPostIcon, DateContainer, Description, ExitIcon,
+    FollowStats, IoHeartFilledStyled, IoHeartOutlineStyled, LikeAndDate,
+    LikeImage, MyPage, MyPosts, NameBio, PostImage, SearchContainer, SearchIcon,
+    SearchInput, SearchResultItem, SearchResultsList, SearchWrapper, Stat, UserImage,
+    EditImage, ImageAndIcon, Pencil, PostPencil, PostTrash
+} from "./styled";
 import handleLogout from "../../utils/logic";
 import handleLike from "../../utils/likesAndUnlikes";
+import EditModal from "../../components/EditModal";
+import deletePost from "../../utils/deletePost";
+
 
 export default function HomePage() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -17,6 +26,10 @@ export default function HomePage() {
     const { name, setName, token, setToken } = useContext(UserContext);
     const navigate = useNavigate();
     const searchInputRef = useRef(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editType, setEditType] = useState(null);
+    const [postToDelete, setPostToDelete] = useState(null);
+
 
     useEffect(() => {
         if (!token || !name) {
@@ -112,10 +125,14 @@ export default function HomePage() {
 
             {loggedInUser && (
                 <MyPage>
-                    <UserImage src={loggedInUser.imageUrl} alt="Foto do usuário" />
+                    <ImageAndIcon>
+                        <UserImage src={loggedInUser.imageUrl} alt="Foto do usuário" />
+                        <EditImage onClick={() => { setIsModalOpen(true); setEditType("image"); }} />
+                    </ImageAndIcon>
+
                     <NameBio>
-                        <h3>Bem-vindo(a), {loggedInUser.name}</h3>
-                        <h4>{loggedInUser.biography}</h4>
+                        <h3>Bem-vindo(a), {loggedInUser.name} <Pencil onClick={() => { setIsModalOpen(true); setEditType("name"); }} /> </h3>
+                        <h4>{loggedInUser.biography} <Pencil onClick={() => { setIsModalOpen(true); setEditType("bio"); }} /> </h4>
                         <FollowStats>
                             <Stat onClick={() => navigate("/my-followers")}>
                                 <strong>Ver Seguidores</strong>
@@ -130,6 +147,12 @@ export default function HomePage() {
 
             {posts.map((p) => (
                 <MyPosts key={p.id}>
+                    <PostPencil onClick={() => { setIsModalOpen(true); setEditType("post"); }} />
+                    <PostTrash onClick={() => {
+                        setIsModalOpen(true);
+                        setEditType("deletePost");
+                        setPostToDelete(p.id);
+                    }} />
                     <PostImage src={p.pictureUrl} alt="Foto do post" />
                     <LikeAndDate>
                         <LikeImage>
@@ -153,6 +176,20 @@ export default function HomePage() {
             <Link to="/new-post">
                 <AddPostIcon />
             </Link>
+            <EditModal
+                isOpen={isModalOpen}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setPostToDelete(null);
+                }}
+                type={editType}
+                onConfirm={() => {
+                    if (editType === "deletePost" && postToDelete) {
+                        deletePost(postToDelete, token, setPosts, setIsModalOpen, setPostToDelete);
+                    }
+                }}
+            />
+
         </Page>
     );
 };

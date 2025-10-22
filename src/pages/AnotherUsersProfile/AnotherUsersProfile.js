@@ -4,12 +4,13 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import apiUsers from "../../services/apiUsers";
 import dayjs from "dayjs";
-import { OptionLink, Options, Page, Top } from "../registrationAndLogin/styled";
-import { DateContainer, Description, ExitIcon, LikeAndDate, MyPage, MyPosts, NameBio, PostImage, UserImage } from "../HomePage/styled";
-import { FollowButton, LikeImage, IoHeartFilledStyled, IoHeartOutlineStyled } from "../AnotherUsersProfile/styled";
+import { OptionLink, Options, Top } from "../registrationAndLogin/styled";
+import { DateContainer, Description, ExitIcon, LikeAndDate, MyPage, MyPosts, NameBio, Page, PostImage } from "../HomePage/styled";
+import { FollowButton, LikeImage, IoHeartFilledStyled, IoHeartOutlineStyled, UserImage } from "../AnotherUsersProfile/styled";
 import handleLogout from "../../utils/logic";
 import handleLike from "../../utils/likesAndUnlikes";
 import handleFollow from "../../utils/followings";
+
 
 
 

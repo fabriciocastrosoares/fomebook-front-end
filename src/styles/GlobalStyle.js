@@ -9,6 +9,7 @@ const GlobalStyle = createGlobalStyle`
 
   html, body, #root {
     height: 100%;
+    
   }
 
   body {
@@ -57,12 +58,19 @@ const GlobalStyle = createGlobalStyle`
         padding: 12px; 
     }
     form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 25px;
-        margin-top: 200px;
+      /* background-color: #dbe6f8ff; */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 40%;
+      gap: 25px;
+      p{
+        color: #0864f7;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+       
     }  
 
    input {

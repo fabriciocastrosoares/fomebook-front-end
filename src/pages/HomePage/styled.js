@@ -1,14 +1,14 @@
 import styled from "styled-components";
 import { IoHeart, IoHeartOutline, IoSearchOutline, IoAddCircle, IoExitOutline } from "react-icons/io5";
+import { IoIosCamera } from "react-icons/io";
+import { TiPencil } from "react-icons/ti";
+import { FaRegTrashCan } from "react-icons/fa6";
 
-export const MyPage = styled.div`
-    border: 1px solid #aec8f1ff;
-    width: 100vh;
-    height: 10vw;
-    margin-top: 130px;
+export const Page = styled.div`
+    background-color: white;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    flex-direction: column;
 `;
 
 export const SearchWrapper = styled.div`
@@ -82,12 +82,50 @@ export const SearchResultItem = styled.li`
     span { font-size: 16px; color: #333; }
 `;
 
-export const UserImage = styled.img`
+export const MyPage = styled.div`
+    border: 1px solid #aec8f1ff;
+    width: 100vh;
+    height: 10vw;
+    margin-top: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 5px;
+`;
+
+export const ImageAndIcon = styled.div`
+    position: relative;
     width: 120px;
     height: 120px;
+
+`;
+
+export const UserImage = styled.img`
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    object-fit: cover; 
-    border: 1px solid #aec8f1ff;
+    object-fit: cover;
+    border: 5px solid #aec8f1ff;
+    background-color: #dbe6f8ff;
+`;
+
+export const EditImage = styled(IoIosCamera)`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 35px;
+  height: 35px;
+  color: white;
+  background-color: #0864f7;
+  border-radius: 50%;
+  border: 3px solid white;
+  padding: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #074bcc;
+  }
 `;
 
 export const NameBio = styled.div`
@@ -96,6 +134,15 @@ export const NameBio = styled.div`
     justify-content: space-evenly;
     height: 10vw;
     padding: 20px;
+`;
+
+export const Pencil = styled(TiPencil)`
+    cursor: pointer;
+    color: #aec8f1ff;
+    transition: color 0.2s ease;
+    &:hover {
+        color: #074bcc;
+  }
 `;
 
 export const FollowStats = styled.div`
@@ -126,7 +173,35 @@ export const MyPosts = styled.div`
     flex-direction: column;
     padding: 20px;
     position: relative;
+    border-radius: 5px;
 `;
+
+export const PostPencil = styled(TiPencil)`
+  position: absolute;
+  top: 15px;
+  right: 40px;
+  cursor: pointer;
+  color: #aec8f1ff;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #074bcc;
+  }
+`;
+
+export const PostTrash = styled(FaRegTrashCan)`
+    position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  color: #aec8f1ff;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #074bcc;
+  }
+`;
+
 
 export const PostImage = styled.img`
     height: 30vw;
@@ -178,3 +253,4 @@ export const Description = styled.div`
     margin-left: 25px;
     margin-top: 20px;
 `;
+

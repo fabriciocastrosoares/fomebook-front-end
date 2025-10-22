@@ -4,8 +4,8 @@ import { UserContext } from "../../contexts/UserContext";
 import apiUsers from "../../services/apiUsers";
 import MyLogo from "../../components/Logo";
 import apiFollowers from "../../services/apiFollowers";
-import { OptionLink, Options, Page, Top } from "../registrationAndLogin/styled";
-import { ExitIcon } from "../HomePage/styled";
+import { OptionLink, Options, Top } from "../registrationAndLogin/styled";
+import { ExitIcon, Page } from "../HomePage/styled";
 import { Container, UserItem, UserList } from "./styled";
 import handleLogout from "../../utils/logic";
 

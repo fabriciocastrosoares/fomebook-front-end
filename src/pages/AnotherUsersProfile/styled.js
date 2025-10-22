@@ -1,6 +1,12 @@
 import styled from "styled-components";
-import { IoHeart, IoHeartOutline, IoExitOutline } from "react-icons/io5";
+import { IoHeart, IoHeartOutline } from "react-icons/io5";
 
+export const UserImage = styled.img`
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 5px solid #aec8f1ff;
+`;
 export const FollowButton = styled.button`
   display: flex;
   justify-content: center;
