@@ -42,24 +42,26 @@ export default function SigninPage() {
                     <InputWrapper>
                         <input
                             type="email"
+                            placeholder=" "
                             autoComplete="username"
                             required
                             value={email}
                             onChange={e => setEmail(e.target.value)}
                         />
-                        <label className={email ? "filled" : ""}>E-mail:</label>
+                        <label>E-mail:</label>
                     </InputWrapper>
 
                     <InputWrapper>
                         <input
                             type="password"
+                            placeholder=" "
                             autoComplete="new-password"
                             required
                             minLength={3}
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                         />
-                        <label className={password ? "filled" : ""}>Senha:</label>
+                        <label>Senha:</label>
                     </InputWrapper>
 
                     <button type="submit">ENTRAR</button>
@@ -70,7 +72,3 @@ export default function SigninPage() {
         </Page>
     );
 };
-
-
-
-

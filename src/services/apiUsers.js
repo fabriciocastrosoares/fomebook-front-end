@@ -27,5 +27,10 @@ function unfollowUser(token, userId) {
     return promise;
 };
 
-const apiUsers = { getUser, searchUsers, getUserById, followUser, unfollowUser };
+function updateUser(token, id, body){
+    const promise = axios.put(`${process.env.REACT_APP_API_URL}/users/${id}`, body, createConfig(token));
+    return promise;
+};
+
+const apiUsers = { getUser, searchUsers, getUserById, followUser, unfollowUser, updateUser };
 export default apiUsers;

@@ -45,23 +45,25 @@ export default function NewPost() {
                     <InputWrapper>
                         <input
                             type="url"
+                            placeholder=" "
                             autoComplete="pictureUrl"
                             required
                             value={pictureUrl}
                             onChange={e => setPictureUrl(e.target.value)}
                         />
-                        <label className={pictureUrl ? "filled" : ""}>Foto:</label>
+                        <label>Foto:</label>
                     </InputWrapper>
 
 
                     <InputWrapper $isBig={true}>
                         <TextArea
+                            placeholder=" "
                             required
                             value={description}
                             autoComplete="description"
                             onChange={e => setDescription(e.target.value)}
                         />
-                        <label className={description ? "filled" : ""}>Descrição:</label>
+                        <label>Descrição:</label>
                     </InputWrapper>
 
                     <button type="submit">CRIAR POST</button>
@@ -80,13 +82,36 @@ const ContainerPost = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     gap: 25px;
-    position: absolute;
 
     p{
         color: #0864f7;
         text-decoration: underline;
         cursor: pointer;
     }
-  `;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 90%;
+        max-width: 600px;
+    }
+
+    form button {
+        width: 90%;
+        max-width: 400px;
+        height: 60px;
+        border: none;
+        border-radius: 12px;
+        background-color: #0864f7;
+        font-size: 16px;
+        font-weight: 700;
+        color: #ffffff;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.2s ease;
+    }
+`;

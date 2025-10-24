@@ -42,67 +42,73 @@ export default function SignupPage() {
                     <InputWrapper>
                         <input
                             type="text"
+                            placeholder=" "
                             required
                             value={name}
                             onChange={e => setName(e.target.value)}
                         />
-                        <label className={name ? "filled" : ""}>Nome:</label>
+                        <label>Nome:</label>
                     </InputWrapper>
 
                     <InputWrapper>
                         <input
                             type="email"
                             autoComplete="username"
+                            placeholder=" "
                             required
                             value={email}
                             onChange={e => setEmail(e.target.value)}
                         />
-                        <label className={email ? "filled" : ""}>E-mail:</label>
+                        <label>E-mail:</label>
                     </InputWrapper>
 
                     <InputWrapper>
                         <input
                             type="url"
                             autoComplete="imageUrl"
+                            placeholder=" "
                             required
                             value={imageUrl}
                             onChange={e => setImageUrl(e.target.value)}
                         />
-                        <label className={imageUrl ? "filled" : ""}>Foto de Perfil:</label>
+                        <label>Foto de Perfil:</label>
                     </InputWrapper>
 
                     <InputWrapper $isBig={true}>
                         <TextArea
+                            placeholder=" "
                             required
                             value={biography}
                             autoComplete="biography"
                             onChange={e => setBiography(e.target.value)}
                         />
-                        <label className={biography ? "filled" : ""}>Biografia:</label>
+                        <label>Biografia:</label>
                     </InputWrapper>
 
                     <InputWrapper>
                         <input
                             type="password"
                             autoComplete="new-password"
+                            placeholder=" "
                             required
                             minLength={3}
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                         />
-                        <label className={password ? "filled" : ""}>Senha:</label>
+                        <label>Senha:</label>
                     </InputWrapper>
 
                     <InputWrapper>
                         <input
                             type="password"
                             autoComplete="new-password"
+                            placeholder=" "
                             required
                             minLength={3}
                             value={confirmPassword}
                             onChange={e => setConfirmPassword(e.target.value)}
                         />
-                        <label className={confirmPassword ? "filled" : ""}>Confirmar a Senha:</label>
+                        <label>Confirmar a Senha:</label>
                     </InputWrapper>
 
                     <button type="submit">CRIAR CONTA</button>
@@ -114,4 +120,3 @@ export default function SignupPage() {
 
     );
 };
-

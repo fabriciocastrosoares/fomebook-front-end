@@ -9,13 +9,14 @@ import {
     Page, AddPostIcon, DateContainer, Description, ExitIcon,
     FollowStats, IoHeartFilledStyled, IoHeartOutlineStyled, LikeAndDate,
     LikeImage, MyPage, MyPosts, NameBio, PostImage, SearchContainer, SearchIcon,
-    SearchInput, SearchResultItem, SearchResultsList, SearchWrapper, Stat, UserImage,
+    SearchInput, SearchResultItem, SearchResultsList, SearchWrapper, Stat, Tooltip, UserImage,
     EditImage, ImageAndIcon, Pencil, PostPencil, PostTrash
 } from "./styled";
 import handleLogout from "../../utils/logic";
 import handleLike from "../../utils/likesAndUnlikes";
 import EditModal from "../../components/EditModal";
 import deletePost from "../../utils/deletePost";
+import apiPosts from "../../services/apiPosts";
 
 
 export default function HomePage() {
@@ -29,7 +30,7 @@ export default function HomePage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editType, setEditType] = useState(null);
     const [postToDelete, setPostToDelete] = useState(null);
-
+    const [hoveredPostId, setHoveredPostId] = useState(null);
 
     useEffect(() => {
         if (!token || !name) {
@@ -76,6 +77,10 @@ export default function HomePage() {
 
         return () => clearTimeout(debouncedSearch);
     }, [searchQuery, token]);
+
+    const handleMouseLeave = () => {
+        setHoveredPostId(null);
+    };
 
     return (
         <Page>
@@ -147,7 +152,11 @@ export default function HomePage() {
 
             {posts.map((p) => (
                 <MyPosts key={p.id}>
-                    <PostPencil onClick={() => { setIsModalOpen(true); setEditType("post"); }} />
+                    <PostPencil onClick={() => {
+                        setIsModalOpen(true);
+                        setEditType("post");
+                        setPostToDelete(p.id);
+                    }} />
                     <PostTrash onClick={() => {
                         setIsModalOpen(true);
                         setEditType("deletePost");
@@ -155,13 +164,42 @@ export default function HomePage() {
                     }} />
                     <PostImage src={p.pictureUrl} alt="Foto do post" />
                     <LikeAndDate>
-                        <LikeImage>
+                        <LikeImage onMouseEnter={() => setHoveredPostId(p.id)} onMouseLeave={handleMouseLeave}>
                             {p.likedByUser ? (
                                 <IoHeartFilledStyled onClick={() => handleLike(p.id, p.likedByUser, token, setPosts)} />
                             ) : (
                                 <IoHeartOutlineStyled onClick={() => handleLike(p.id, p.likedByUser, token, setPosts)} />
                             )}
                             <p>{p.likeCount} {p.likeCount === 1 ? "pessoa curtiu" : "pessoas curtiram"} sua foto!</p>
+
+                            {hoveredPostId === p.id && p.likeCount > 0 && (
+                                <Tooltip>
+                                    {(() => {
+                                        // 1. Prepara a lista de "outros" que curtiram.
+                                        const otherLikers = (Array.isArray(p.likers) ? p.likers : JSON.parse(p.likers || '[]'))
+                                            .filter(name => name !== loggedInUser.name);
+
+                                        // 2. Monta a lista inicial de nomes a serem exibidos.
+                                        const namesToShow = [];
+                                        if (p.likedByUser) {
+                                            namesToShow.push("Você");
+                                        }
+                                        namesToShow.push(...otherLikers.slice(0, 2));
+
+                                        const totalLikes = p.likeCount;
+                                        const displayedNamesCount = namesToShow.length;
+                                        const remainingLikes = totalLikes - displayedNamesCount;
+
+                                        let text = namesToShow.join(', ');
+
+                                        if (remainingLikes > 0) {
+                                            text += ` e mais ${remainingLikes} pessoa${remainingLikes > 1 ? 's' : ''}`;
+                                        }
+
+                                        return <span>{text}</span>;
+                                    })()}
+                                </Tooltip>
+                            )}
                         </LikeImage>
                         <DateContainer>
                             <p>{dayjs(p.createdAt).format("DD/MM/YYYY [às] HH[h]mm")}</p>
@@ -183,12 +221,50 @@ export default function HomePage() {
                     setPostToDelete(null);
                 }}
                 type={editType}
-                onConfirm={() => {
-                    if (editType === "deletePost" && postToDelete) {
-                        deletePost(postToDelete, token, setPosts, setIsModalOpen, setPostToDelete);
+                onConfirm={async (newValue) => {
+                    try {
+                        if (editType === "deletePost" && postToDelete) {
+                            deletePost(postToDelete, token, setPosts, setIsModalOpen, setPostToDelete);
+                            return;
+                        }
+                        if (["image", "name", "bio", "post"].includes(editType)) {
+                            if (editType === "post") {
+                                const body = { description: newValue };
+
+                                try {
+                                    await apiPosts.updatePosts(token, postToDelete, body);
+                                    setPosts(prev =>
+                                        prev.map(p => (p.id === postToDelete ? { ...p, description: newValue } : p))
+                                    );
+
+                                    setIsModalOpen(false);
+                                    setPostToDelete(null);
+                                } catch (err) {
+                                    console.error("Erro ao atualizar post:", err.response?.data || err.message);
+                                }
+                                return;
+                            }
+
+                            const body = {};
+                            if (editType === "image") body.imageUrl = newValue;
+                            if (editType === "name") body.name = newValue;
+                            if (editType === "bio") body.biography = newValue;
+
+                            try {
+                                const res = await apiUsers.updateUser(token, loggedInUser.id, body);
+                                setLoggedInUser(res.data);
+                                setIsModalOpen(false);
+                            } catch (err) {
+                                console.error("Erro ao atualizar usuário:", err.response?.data || err.message);
+                            }
+                        }
+
+                    } catch (err) {
+                        console.error("Erro ao atualizar usuário:", err.response?.data || err.message);
                     }
                 }}
             />
+
 
         </Page>
     );

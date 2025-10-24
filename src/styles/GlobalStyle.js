@@ -37,79 +37,9 @@ const GlobalStyle = createGlobalStyle`
     font-size: 36px;
   }
 
-  /* ajustes úteis */
-  /* input, button, textarea, select {
-    font-family: inherit;
-  } */
-
-      
-    button{
-        font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-        font-size: 14px;
-        font-weight: 700;
-        color: #ffffff;
-        width: 182px;
-        height: 60px;
-        outline: none;
-        border: none;
-        border-radius: 12px;
-        background-color: #0864f7;
-        cursor: pointer;
-        padding: 12px; 
-    }
-    form {
-      /* background-color: #dbe6f8ff; */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 40%;
-      gap: 25px;
-      p{
-        color: #0864f7;
-        text-decoration: underline;
-        cursor: pointer;
-      }
-       
-    }  
-
-   input {
-        box-sizing: border-box;
-        font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-        font-size: 14px;
-        font-weight: 400;
-        color: black;
-        width: 100%;
-        height: 100%;
-        border-radius: 12px;
-        border: 1px solid #aec8f1ff;
-        padding: 20px 22px 0 22px;
-        outline: none;
-
-        &:focus {
-            border-color: #0864f7;
-        }
-    }
-
-        label {
-        position: absolute;
-        left: 22px;
-        top: 20px;
-        font-size: 14px;
-        font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-        font-weight: 400;
-        color: #777;
-        transition: 0.2s ease;
-        pointer-events: none;
-    }
-
-    input:focus + label,
-    .filled {
-        top: 6px;
-        font-size: 12px;
-        font-weight: 500;
-        color: #0864f7;
-    }
+  input, button, textarea, select {
+    font-family: inherit; /* Garante que elementos de formulário herdem a fonte */
+  }
 
 `;
 

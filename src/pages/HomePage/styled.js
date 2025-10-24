@@ -9,6 +9,7 @@ export const Page = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
+    padding-bottom: 80px; 
 `;
 
 export const SearchWrapper = styled.div`
@@ -23,7 +24,7 @@ export const SearchContainer = styled.div`
 
 export const SearchInput = styled.input`
     height: 40px;
-    width: 250px;
+    width: 100%;
     border-radius: 8px;
     border: 1px solid #aec8f1ff;
     padding: 0 40px 0 15px;
@@ -52,7 +53,7 @@ export const SearchResultsList = styled.ul`
     position: absolute;
     top: 50px;
     left: 0;
-    width: 250px;
+    width: 100%;
     background-color: #e7e7e7;
     border-radius: 8px;
     list-style: none;
@@ -84,13 +85,21 @@ export const SearchResultItem = styled.li`
 
 export const MyPage = styled.div`
     border: 1px solid #aec8f1ff;
-    width: 100vh;
-    height: 10vw;
+    width: 95%;
+    max-width: 800px;
     margin-top: 130px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
+    gap: 20px;
     border-radius: 5px;
+    padding: 20px;
+    flex-wrap: wrap; 
+
+    @media (min-width: 768px) {
+        justify-content: space-around;
+        flex-wrap: nowrap;
+    }
 `;
 
 export const ImageAndIcon = styled.div`
@@ -132,8 +141,11 @@ export const NameBio = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    height: 10vw;
+    min-height: 120px;
     padding: 20px;
+    h3, h4 {
+        word-break: break-word; 
+    }
 `;
 
 export const Pencil = styled(TiPencil)`
@@ -167,13 +179,17 @@ export const Stat = styled.p`
 
 export const MyPosts = styled.div`
     border: 1px solid #aec8f1ff;
-    width: 100vh;
+    width: 95%;
+    max-width: 800px;
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     padding: 20px;
     position: relative;
     border-radius: 5px;
+    p {
+        word-break: break-word; 
+    }
 `;
 
 export const PostPencil = styled(TiPencil)`
@@ -204,7 +220,9 @@ export const PostTrash = styled(FaRegTrashCan)`
 
 
 export const PostImage = styled.img`
-    height: 30vw;
+    max-width: 100%;
+    height: auto;
+    max-height: 70vh;
     padding: 20px;
 `;
 
@@ -217,6 +235,7 @@ export const LikeAndDate = styled.div`
 export const LikeImage = styled.div`
     display: flex;
     align-items: center;
+    position: relative;
     cursor: pointer;
     margin-left: 20px;
     gap: 5px;
@@ -245,12 +264,54 @@ export const AddPostIcon = styled(IoAddCircle)`
     width: 50px;
     height: 50px;
     position: fixed;
-    right: 300px;
-    top: 800px;
+    bottom: 60px;
+    right: 20px;
+    cursor: pointer;
+
+    @media (min-width: 1024px) {
+        right: calc(50% - 400px - 100px); 
+    }
 `;
 
 export const Description = styled.div`
     margin-left: 25px;
     margin-top: 20px;
+`;
+
+export const Tooltip = styled.div`
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px;
+  bottom: 40px; /* Posiciona acima do ícone de like */
+  left: -10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 10;
+  width: max-content; /* Ajusta a largura ao conteúdo */
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+
+    img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+    }
+
+    span {
+      font-size: 13px;
+      color: #333;
+    }
+  }
+
+  /* Estilo para o texto "e mais..." */
+  > span {
+    font-size: 12px;
+    color: #666;
+  }
 `;
 
