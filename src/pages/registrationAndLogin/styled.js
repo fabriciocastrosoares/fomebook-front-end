@@ -179,6 +179,8 @@ export const ContanerLogin = styled.div`
 
       p {
         font-size: 0.9em;
+        cursor: pointer;
+        text-decoration: underline;
       }
 
       @media (min-width: 768px) {

@@ -3,6 +3,7 @@ import { IoHeart, IoHeartOutline, IoSearchOutline, IoAddCircle, IoExitOutline } 
 import { IoIosCamera } from "react-icons/io";
 import { TiPencil } from "react-icons/ti";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
 export const Page = styled.div`
     background-color: white;
@@ -143,6 +144,7 @@ export const NameBio = styled.div`
     justify-content: space-evenly;
     min-height: 120px;
     padding: 20px;
+    gap: 10px;
     h3, h4 {
         word-break: break-word; 
     }
@@ -314,4 +316,16 @@ export const Tooltip = styled.div`
     color: #666;
   }
 `;
-
+ 
+export const CommentIcon = styled(IoChatbubbleEllipsesOutline)`
+    width: 30px;
+    height: 30px;
+    color: #0864f7;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    p {
+        font-size: 14px;
+    }
+`;

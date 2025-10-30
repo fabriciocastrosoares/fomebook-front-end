@@ -6,6 +6,7 @@ export const UserImage = styled.img`
   height: 120px;
   border-radius: 50%;
   border: 5px solid #aec8f1ff;
+  cursor: pointer;
 `;
 export const FollowButton = styled.button`
   display: flex;

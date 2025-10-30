@@ -9,7 +9,7 @@ import Logo from "../../components/LogoAndSlogan";
 export default function SigninPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { setName, setToken } = useContext(UserContext);
+    const { setName, setToken, setImage } = useContext(UserContext);
     const navigate = useNavigate();
 
     function handleLogin(e) {
@@ -21,15 +21,16 @@ export default function SigninPage() {
             .then(res => {
                 setName(res.data.name);
                 setToken(res.data.token);
+                setImage(res.data.image)
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("name", res.data.name);
-                navigate("/home-page")
+                localStorage.setItem("image", res.data.image);
+                navigate("/time-line")
             })
             .catch(err => {
                 alert(err.response.data);
             })
     };
-
 
     return (
         <Page>
@@ -65,7 +66,7 @@ export default function SigninPage() {
                     </InputWrapper>
 
                     <button type="submit">ENTRAR</button>
-                    <p onClick={() => navigate("/signup-page")}>Primeira vez? Crie uma conta!</p>
+                    <p onClick={() => navigate("/signup-page")}>Primeira vez? Clique aqui e crie uma conta!</p>
                 </form>
             </ContanerLogin>
 

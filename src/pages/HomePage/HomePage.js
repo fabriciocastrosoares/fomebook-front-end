@@ -10,13 +10,16 @@ import {
     FollowStats, IoHeartFilledStyled, IoHeartOutlineStyled, LikeAndDate,
     LikeImage, MyPage, MyPosts, NameBio, PostImage, SearchContainer, SearchIcon,
     SearchInput, SearchResultItem, SearchResultsList, SearchWrapper, Stat, Tooltip, UserImage,
-    EditImage, ImageAndIcon, Pencil, PostPencil, PostTrash
+    EditImage, ImageAndIcon, Pencil, PostPencil, PostTrash, CommentIcon
 } from "./styled";
 import handleLogout from "../../utils/logic";
 import handleLike from "../../utils/likesAndUnlikes";
 import EditModal from "../../components/EditModal";
 import deletePost from "../../utils/deletePost";
-import apiPosts from "../../services/apiPosts";
+import apiPosts from "../../services/apiPosts"; // Keep this import
+import CommentSection from "../../services"; // Corrected import path for CommentSection
+
+
 
 
 export default function HomePage() {
@@ -31,6 +34,7 @@ export default function HomePage() {
     const [editType, setEditType] = useState(null);
     const [postToDelete, setPostToDelete] = useState(null);
     const [hoveredPostId, setHoveredPostId] = useState(null);
+    const [activeCommentPostId, setActiveCommentPostId] = useState(null);
 
     useEffect(() => {
         if (!token || !name) {
@@ -82,10 +86,29 @@ export default function HomePage() {
         setHoveredPostId(null);
     };
 
+    const handleCommentPosted = (postId, newComment) => {
+        setPosts(currentPosts =>
+            currentPosts.map(post => {
+                if (post.id === postId) {
+                    const commentWithUser = {
+                        ...newComment,
+                        user: {
+                            id: loggedInUser.id,
+                            name: loggedInUser.name,
+                            imageUrl: loggedInUser.imageUrl,
+                        },
+                    };
+                    const updatedComments = [...(post.comments || []), commentWithUser];
+                    return { ...post, comments: updatedComments, commentCount: updatedComments.length };
+                }
+                return post;
+            })
+        );
+    };
     return (
         <Page>
             <Top>
-                <MyLogo onClick={() => navigate("/home-page")} />
+                <MyLogo onClick={() => navigate("/time-line")} />
                 <Options>
                     <SearchWrapper>
                         <SearchContainer>
@@ -151,6 +174,7 @@ export default function HomePage() {
             )}
 
             {posts.map((p) => (
+               
                 <MyPosts key={p.id}>
                     <PostPencil onClick={() => {
                         setIsModalOpen(true);
@@ -175,11 +199,11 @@ export default function HomePage() {
                             {hoveredPostId === p.id && p.likeCount > 0 && (
                                 <Tooltip>
                                     {(() => {
-                                        // 1. Prepara a lista de "outros" que curtiram.
+
                                         const otherLikers = (Array.isArray(p.likers) ? p.likers : JSON.parse(p.likers || '[]'))
                                             .filter(name => name !== loggedInUser.name);
 
-                                        // 2. Monta a lista inicial de nomes a serem exibidos.
+
                                         const namesToShow = [];
                                         if (p.likedByUser) {
                                             namesToShow.push("Você");
@@ -195,12 +219,15 @@ export default function HomePage() {
                                         if (remainingLikes > 0) {
                                             text += ` e mais ${remainingLikes} pessoa${remainingLikes > 1 ? 's' : ''}`;
                                         }
-
                                         return <span>{text}</span>;
                                     })()}
                                 </Tooltip>
                             )}
                         </LikeImage>
+                        <CommentIcon onClick={() => setActiveCommentPostId(activeCommentPostId === p.id ? null : p.id)}>
+                           <p>{p.comments?.length || 0}</p>
+                        </CommentIcon>
+
                         <DateContainer>
                             <p>{dayjs(p.createdAt).format("DD/MM/YYYY [às] HH[h]mm")}</p>
                         </DateContainer>
@@ -208,6 +235,15 @@ export default function HomePage() {
                     <Description>
                         <p>{p.description}</p>
                     </Description>
+                    {activeCommentPostId === p.id && (
+                        <CommentSection
+                            postId={p.id}
+                            comments={p.comments || []}
+                            userImage={loggedInUser.imageUrl}
+                            token={token}
+                            onCommentPosted={handleCommentPosted}
+                        />
+                    )}
                 </MyPosts>
             ))}
 
@@ -263,9 +299,10 @@ export default function HomePage() {
                         console.error("Erro ao atualizar usuário:", err.response?.data || err.message);
                     }
                 }}
+                
             />
 
-
+                    
         </Page>
     );
 };

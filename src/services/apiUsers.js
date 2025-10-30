@@ -17,20 +17,10 @@ function getUserById(token, id) {
     return promise;
 };
 
-function followUser(token, userId) {
-    const promise = axios.post(`${process.env.REACT_APP_API_URL}/users/${userId}/follow`, {}, createConfig(token));
-    return promise;
-};
-
-function unfollowUser(token, userId) {
-    const promise = axios.post(`${process.env.REACT_APP_API_URL}/users/${userId}/unfollow`, {}, createConfig(token));
-    return promise;
-};
-
 function updateUser(token, id, body){
     const promise = axios.put(`${process.env.REACT_APP_API_URL}/users/${id}`, body, createConfig(token));
     return promise;
 };
 
-const apiUsers = { getUser, searchUsers, getUserById, followUser, unfollowUser, updateUser };
+const apiUsers = { getUser, searchUsers, getUserById,  updateUser };
 export default apiUsers;

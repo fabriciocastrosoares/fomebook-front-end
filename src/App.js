@@ -8,17 +8,20 @@ import { useState } from "react";
 import { UserContext } from "./contexts/UserContext";
 import SigninPage from "./pages/registrationAndLogin/SigninPage";
 import SignupPage from "./pages/registrationAndLogin/SignupPage";
+import TimeLine from "./pages/timeline/TimeLine";
 
 export default function App() {
   const [name, setName] = useState(localStorage.getItem("name"));
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [image, setImage] = useState(localStorage.getItem("image"));
   return (
     <>
-      <UserContext.Provider value={{ name, setName, token, setToken }}>
+      <UserContext.Provider value={{ name, setName, token, setToken, image, setImage }}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<SigninPage />} />
             <Route path="/signup-page" element={<SignupPage />} />
+            <Route path="time-line" element={<TimeLine />} />
             <Route path="/home-page" element={<HomePage />} />
             <Route path="/new-post" element={<NewPost />} />
             <Route path="/my-followers" element={<MyFollowersPage />} />
