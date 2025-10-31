@@ -1,17 +1,12 @@
 import { useState } from "react";
-import apiComments from "./apiComments";
-import {
-    CommentsContainer,
-    CommentList,
-    CommentItem,
-    CommentContent,
-    NewCommentForm,
-    SendCommentIcon
-} from "./styled";
+import { useNavigate } from "react-router-dom";
+import apiComments from "../services/apiComments";
+import { CommentsContainer, CommentList, CommentItem, CommentContent, NewCommentForm, SendCommentIcon, CommentAuthor, AuthorStatus } from "./styled";
 
-export default function CommentSection({ postId, comments, userImage, token, onCommentPosted }) {
+export default function CommentSection({ postId, comments, userImage, token, onCommentPosted, postAuthorId, followingIds }) {
     const [newComment, setNewComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
 
     async function handleCommentSubmit(e) {
         e.preventDefault();
@@ -35,10 +30,18 @@ export default function CommentSection({ postId, comments, userImage, token, onC
         <CommentsContainer>
             <CommentList>
                 {comments.map(comment => (
-                    <CommentItem key={comment.id}>
+                    <CommentItem  onClick={() => navigate(`/users/${comment.user.id}`)} key={comment.id}>
                         <img src={comment.user.imageUrl} alt={comment.user.name} />
                         <CommentContent>
-                            <strong>{comment.user.name}</strong>
+                            <CommentAuthor >
+                                <strong>{comment.user.name}</strong>
+                                {comment.user.id === postAuthorId && (
+                                    <AuthorStatus>• post's author</AuthorStatus>
+                                )}
+                                {followingIds.includes(comment.user.id) && comment.user.id !== postAuthorId && (
+                                     <AuthorStatus>• following</AuthorStatus>
+                                )}
+                            </CommentAuthor>
                             <p>{comment.text}</p>
                         </CommentContent>
                     </CommentItem>

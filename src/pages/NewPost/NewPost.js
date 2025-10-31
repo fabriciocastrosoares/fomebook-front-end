@@ -1,15 +1,16 @@
-import MyLogo from "../../components/Logo";
 import { useContext, useState } from "react";
 import apiPosts from "../../services/apiPosts";
 import { useNavigate } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
-import { InputWrapper, OptionLink, Options, TextArea, Top } from "../registrationAndLogin/styled";
+import { InputWrapper, OptionLink, Options, TextArea } from "../registrationAndLogin/styled";
 import { ExitIcon, Page } from "../HomePage/styled";
 import handleLogout from "../../utils/logic";
 import styled from "styled-components";
+import { UserImage } from "../AnotherUsersProfile/styled";
+import { FacebookIcon, MyLogo, Topo } from "../timeline/styled";
 
 export default function NewPost() {
-    const { setName, token, setToken } = useContext(UserContext);
+    const { name, setName, token, setToken, image } = useContext(UserContext);
     const [pictureUrl, setPictureUrl] = useState("");
     const [description, setDescription] = useState("");
     const navigate = useNavigate();
@@ -32,13 +33,17 @@ export default function NewPost() {
 
     return (
         <Page>
-            <Top>
-                <MyLogo onClick={() => navigate("/home-page")} />
+            <Topo>
+                <UserImage src={image} alt={name} onClick={() => navigate("/home-page")} />
+                <MyLogo onClick={() => navigate("/time-line")}>
+                    <FacebookIcon />
+                    <h1>omebook</h1>
+                </MyLogo>
                 <Options>
-                    <OptionLink onClick={() => navigate("/home-page")}>Início</OptionLink>
+                    <OptionLink onClick={() => navigate("/time-line")}>Início</OptionLink>
                     <ExitIcon onClick={() => handleLogout(token, setName, setToken, navigate)} />
                 </Options>
-            </Top>
+            </Topo>
             <ContainerPost>
                 <form onSubmit={newPost}>
                     <h2>Novo Post</h2>

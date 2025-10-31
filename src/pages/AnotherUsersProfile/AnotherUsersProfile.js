@@ -1,20 +1,22 @@
-import MyLogo from "../../components/Logo";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import apiUsers from "../../services/apiUsers";
 import dayjs from "dayjs";
-import { OptionLink, Options, Top } from "../registrationAndLogin/styled";
-import { CommentIcon, DateContainer, Description, ExitIcon, LikeAndDate, MyPage, MyPosts, NameBio, Page, Tooltip, PostImage } from "../HomePage/styled";
+import { OptionLink, Options } from "../registrationAndLogin/styled";
+import { ChatBubbleIcon, CommentIcon, DateContainer, Description, ExitIcon, LikeAndDate, MyPage, MyPosts, NameBio, Page, Tooltip, PostImage, RepostIconContainer, RepostIcon } from "../HomePage/styled";
 import { FollowButton, LikeImage, IoHeartFilledStyled, IoHeartOutlineStyled, UserImage } from "../AnotherUsersProfile/styled";
 import handleLogout from "../../utils/logic";
 import handleLike from "../../utils/likesAndUnlikes";
 import handleFollow from "../../utils/followings";
-import CommentSection from "../../services";
+import CommentSection from "../../components/commentSection";
+import { FacebookIcon, MyLogo, Topo } from "../timeline/styled";
+import RepostModal from "../../components/RepostModal";
+import apiPosts from "../../services/apiPosts";
 
 export default function AnotherUsersProfile() {
   const { id } = useParams();
-  const { name, setName, token, setToken } = useContext(UserContext);
+  const { name, setName, token, setToken, image } = useContext(UserContext);
   const [userProfile, setUserProfile] = useState(null);
   const [posts, setPosts] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState(null);
@@ -24,6 +26,9 @@ export default function AnotherUsersProfile() {
 
   const [hoveredPostId, setHoveredPostId] = useState(null);
   const [activeCommentPostId, setActiveCommentPostId] = useState(null);
+  const [isRepostModalOpen, setIsRepostModalOpen] = useState(false);
+  const [postToRepost, setPostToRepost] = useState(null);
+  const [isReposting, setIsReposting] = useState(false);
   useEffect(() => {
     if (!token || !name) {
       navigate("/");
@@ -44,7 +49,7 @@ export default function AnotherUsersProfile() {
 
         setLoggedInUser(loggedInUserData);
         setUserProfile(userProfileData);
-        setPosts(userProfileData.posts);
+        setPosts(userProfileData.posts || []);
 
         const isUserFollowing =
           Array.isArray(userProfileData.followers) &&
@@ -71,23 +76,42 @@ export default function AnotherUsersProfile() {
 
   const handleCommentPosted = (postId, newComment) => {
     setPosts(currentPosts =>
-        currentPosts.map(post => {
-            if (post.id === postId) {
-                const commentWithUser = {
-                    ...newComment,
-                    user: {
-                        id: loggedInUser.id,
-                        name: loggedInUser.name,
-                        imageUrl: loggedInUser.imageUrl,
-                    },
-                };
-                const updatedComments = [...(post.comments || []), commentWithUser];
-                return { ...post, comments: updatedComments, commentCount: updatedComments.length };
-            }
-            return post;
-        })
+      currentPosts.map(post => {
+        if (post.id === postId) {
+          const commentWithUser = {
+            ...newComment,
+            user: {
+              id: loggedInUser.id, 
+              name: loggedInUser.name,
+              imageUrl: loggedInUser.imageUrl,
+            },
+          };
+          const updatedComments = [...(post.comments || []), commentWithUser];
+          return { ...post, comments: updatedComments, commentCount: updatedComments.length };
+        }
+        return post;
+      })
     );
+  };
+
+  const handleRepost = async () => {
+    if (!postToRepost || isReposting) return;
+    setIsReposting(true);
+    try {
+        await apiPosts.repostPost(token, postToRepost.id);
+        setPosts(currentPosts => currentPosts.map(p =>
+            p.id === postToRepost.id ? { ...p, repostCount: (p.repostCount || 0) + 1 } : p
+        ));
+        setIsRepostModalOpen(false);
+        setPostToRepost(null);
+    } catch (error) {
+        console.error("Error reposting:", error);
+        alert("Could not repost. Please try again.");
+    } finally {
+        setIsReposting(false);
+    }
 };
+
 
   if (!userProfile || !loggedInUser) {
     return (
@@ -99,13 +123,17 @@ export default function AnotherUsersProfile() {
 
   return (
     <Page>
-      <Top>
-        <MyLogo onClick={() => navigate("/time-line")} />
+      <Topo>
+        <UserImage src={image} alt={name} onClick={() => navigate("/home-page")} />
+        <MyLogo onClick={() => navigate("/time-line")}>
+          <FacebookIcon />
+          <h1>omebook</h1>
+        </MyLogo>
         <Options>
-          <OptionLink onClick={() => navigate("/home-page")}>Início</OptionLink>
+          <OptionLink onClick={() => navigate("/Time-line")}>Inicio</OptionLink>
           <ExitIcon onClick={() => handleLogout(token, setName, setToken, navigate)} />
         </Options>
-      </Top>
+      </Topo>
 
       <MyPage>
         <UserImage src={userProfile.imageUrl} alt={userProfile.name} />
@@ -134,19 +162,28 @@ export default function AnotherUsersProfile() {
             <PostImage src={post.pictureUrl} alt="Foto do post" />
 
             <LikeAndDate>
-              <div>
-                <LikeImage onMouseEnter={() => setHoveredPostId(post.id)} onMouseLeave={handleMouseLeave}>
-                  {post.likedByUser ? (
-                    <IoHeartFilledStyled onClick={() => handleLike(post.id, post.likedByUser, token, setPosts)} />
-                  ) : (
-                    <IoHeartOutlineStyled onClick={() => handleLike(post.id, post.likedByUser, token, setPosts)} />
-                  )}
-                  <p>{post.likeCount} {post.likeCount === 1 ? "pessoa curtiu" : "pessoas curtiram"}</p>
-                </LikeImage>
-                <CommentIcon onClick={() => setActiveCommentPostId(activeCommentPostId === post.id ? null : post.id)}>
-                  <p>{post.comments?.length || 0}</p>
-                </CommentIcon>
-              </div>
+              <LikeImage onMouseEnter={() => setHoveredPostId(post.id)} onMouseLeave={handleMouseLeave}>
+                {post.likedByUser ? (
+                  <IoHeartFilledStyled onClick={() => handleLike(post.id, post.likedByUser, token, setPosts)} />
+                ) : (
+                  <IoHeartOutlineStyled onClick={() => handleLike(post.id, post.likedByUser, token, setPosts)} />
+                )}
+                <p>{post.likeCount} {post.likeCount === 1 ? "pessoa curtiu" : "pessoas curtiram"}</p>
+              </LikeImage>
+              <CommentIcon onClick={() => setActiveCommentPostId(activeCommentPostId === post.id ? null : post.id)}>
+                <ChatBubbleIcon />
+                <p>
+                  {post.comments?.length || 0}{' '}
+                  {post.comments?.length === 1 ? 'comentário' : 'comentários'}
+                </p>
+              </CommentIcon>
+              <RepostIconContainer onClick={() => {
+                  setPostToRepost(post);
+                  setIsRepostModalOpen(true);
+              }}>
+                  <RepostIcon />
+                  <p>{post.repostCount || 0} re-posts</p>
+              </RepostIconContainer>
 
               {hoveredPostId === post.id && post.likeCount > 0 && (
                 <Tooltip>
@@ -186,19 +223,27 @@ export default function AnotherUsersProfile() {
             </Description>
 
             {activeCommentPostId === post.id && (
-                <CommentSection
-                    postId={post.id}
-                    comments={post.comments || []}
-                    userImage={loggedInUser.imageUrl}
-                    token={token}
-                    onCommentPosted={handleCommentPosted}
-                />
+              <CommentSection
+                postId={post.id}
+                comments={post.comments || []}
+                userImage={loggedInUser.imageUrl}
+                postAuthorId={userProfile.id} 
+                followingIds={(loggedInUser.following || []).map(f => f.id)}
+                token={token}
+                onCommentPosted={handleCommentPosted}
+              />
             )}
           </MyPosts>
         ))
       ) : (
         <p>Este usuário ainda não tem nenhuma postagem.</p>
       )}
+      <RepostModal
+          isOpen={isRepostModalOpen}
+          onClose={() => setIsRepostModalOpen(false)}
+          onConfirm={handleRepost}
+          isReposting={isReposting}
+      />
     </Page>
   );
 };

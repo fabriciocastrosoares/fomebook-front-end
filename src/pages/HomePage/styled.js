@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { IoHeart, IoHeartOutline, IoSearchOutline, IoAddCircle, IoExitOutline } from "react-icons/io5";
+import { IoHeart, IoHeartOutline, IoSearchOutline, IoAddCircle, IoExitOutline, IoRepeat } from "react-icons/io5";
 import { IoIosCamera } from "react-icons/io";
 import { TiPencil } from "react-icons/ti";
 import { FaRegTrashCan } from "react-icons/fa6";
@@ -15,12 +15,14 @@ export const Page = styled.div`
 
 export const SearchWrapper = styled.div`
     position: relative;
+    width: 260px;
 `;
 
 export const SearchContainer = styled.div`
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
 `;
 
 export const SearchInput = styled.input`
@@ -220,7 +222,6 @@ export const PostTrash = styled(FaRegTrashCan)`
   }
 `;
 
-
 export const PostImage = styled.img`
     max-width: 100%;
     height: auto;
@@ -286,11 +287,11 @@ export const Tooltip = styled.div`
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 8px;
-  bottom: 40px; /* Posiciona acima do ícone de like */
+  bottom: 40px;
   left: -10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
   z-index: 10;
-  width: max-content; /* Ajusta a largura ao conteúdo */
+  width: max-content;
 
   div {
     display: flex;
@@ -310,22 +311,38 @@ export const Tooltip = styled.div`
     }
   }
 
-  /* Estilo para o texto "e mais..." */
   > span {
     font-size: 12px;
     color: #666;
   }
 `;
  
-export const CommentIcon = styled(IoChatbubbleEllipsesOutline)`
+export const ChatBubbleIcon = styled(IoChatbubbleEllipsesOutline)`
     width: 30px;
     height: 30px;
     color: #0864f7;
-    cursor: pointer;
+`;
+
+export const CommentIcon = styled.div`
     display: flex;
     align-items: center;
     gap: 5px;
+    cursor: pointer;
     p {
         font-size: 14px;
+        color: #555;
     }
 `;
+
+export const RepostIconContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    color: #555;
+
+    p { font-size: 11px; }
+`;
+
+export const RepostIcon = styled(IoRepeat)` color: #0864f7; font-size: 28px; `;

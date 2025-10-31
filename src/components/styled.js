@@ -5,7 +5,7 @@ export const CommentsContainer = styled.div`
     background-color: #f3f3f3;
     border-radius: 0 0 5px 5px;
     padding: 20px;
-    margin: 0 -20px -20px -20px; /* Para alinhar com as bordas do post */
+    margin: 0 -20px -20px -20px; 
     margin-top: 20px;
 `;
 
@@ -21,7 +21,7 @@ export const CommentItem = styled.li`
     align-items: flex-start;
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
-
+    cursor: pointer;
     &:last-child {
         border-bottom: none;
     }
@@ -49,6 +49,19 @@ export const CommentContent = styled.div`
         color: #555;
         word-break: break-word;
     }
+`;
+
+export const CommentAuthor = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+`;
+
+export const AuthorStatus = styled.span`
+    font-size: 14px;
+    color: #888;
+    font-weight: 400;
 `;
 
 export const NewCommentForm = styled.form`

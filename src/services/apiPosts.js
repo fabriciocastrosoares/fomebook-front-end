@@ -36,5 +36,10 @@ function getTimeLine(token) {
   return promise;
 };
 
-const apiPosts = { createPost, deletePost, getUserPosts, likePost, dislikePost, updatePosts, getTimeLine };
+function repostPost(token, postId) {
+    const promise = axios.post(`${process.env.REACT_APP_API_URL}/posts/${postId}/repost`, {}, createConfig(token));
+    return promise; 
+}
+
+const apiPosts = { createPost, deletePost, getUserPosts, likePost, dislikePost, updatePosts, getTimeLine, repostPost};
 export default apiPosts;

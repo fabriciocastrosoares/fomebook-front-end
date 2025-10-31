@@ -41,7 +41,7 @@ export default function MyFollowersPage() {
             <Top>
                 <MyLogo onClick={() => navigate("/home-page")}/>
                 <Options>
-                    <OptionLink onClick={() => navigate("/home-page")}>Início</OptionLink>
+                    <OptionLink onClick={() => navigate("/time-line")}>Início</OptionLink>
                     <ExitIcon onClick={()=> handleLogout(token, setName, setToken, navigate)} />
                 </Options>
             </Top>

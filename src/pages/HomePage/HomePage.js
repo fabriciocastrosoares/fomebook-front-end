@@ -6,21 +6,20 @@ import apiUsers from "../../services/apiUsers";
 import dayjs from 'dayjs';
 import { Top, Options } from "../registrationAndLogin/styled";
 import {
-    Page, AddPostIcon, DateContainer, Description, ExitIcon,
+    Page, AddPostIcon, ChatBubbleIcon, DateContainer, Description, ExitIcon,
     FollowStats, IoHeartFilledStyled, IoHeartOutlineStyled, LikeAndDate,
     LikeImage, MyPage, MyPosts, NameBio, PostImage, SearchContainer, SearchIcon,
     SearchInput, SearchResultItem, SearchResultsList, SearchWrapper, Stat, Tooltip, UserImage,
-    EditImage, ImageAndIcon, Pencil, PostPencil, PostTrash, CommentIcon
+    EditImage, ImageAndIcon, Pencil, PostPencil, PostTrash, CommentIcon,
+    RepostIconContainer, RepostIcon
 } from "./styled";
 import handleLogout from "../../utils/logic";
 import handleLike from "../../utils/likesAndUnlikes";
 import EditModal from "../../components/EditModal";
 import deletePost from "../../utils/deletePost";
-import apiPosts from "../../services/apiPosts"; // Keep this import
-import CommentSection from "../../services"; // Corrected import path for CommentSection
-
-
-
+import apiPosts from "../../services/apiPosts";
+import CommentSection from "../../components/commentSection";
+import RepostModal from "../../components/RepostModal";
 
 export default function HomePage() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -35,6 +34,9 @@ export default function HomePage() {
     const [postToDelete, setPostToDelete] = useState(null);
     const [hoveredPostId, setHoveredPostId] = useState(null);
     const [activeCommentPostId, setActiveCommentPostId] = useState(null);
+    const [isRepostModalOpen, setIsRepostModalOpen] = useState(false);
+    const [postToRepost, setPostToRepost] = useState(null);
+    const [isReposting, setIsReposting] = useState(false);
 
     useEffect(() => {
         if (!token || !name) {
@@ -105,6 +107,26 @@ export default function HomePage() {
             })
         );
     };
+
+    const handleRepost = async () => {
+        if (!postToRepost || isReposting) return;
+        setIsReposting(true);
+        try {
+            await apiPosts.repostPost(token, postToRepost.id);
+            setPosts(currentPosts => currentPosts.map(p =>
+                p.id === postToRepost.id ? { ...p, repostCount: (p.repostCount || 0) + 1 } : p
+            ));
+            setIsRepostModalOpen(false);
+            setPostToRepost(null);
+        } catch (error) {
+            console.error("Error reposting:", error);
+            alert("Could not repost. Please try again.");
+        } finally {
+            setIsReposting(false);
+        }
+    };
+
+
     return (
         <Page>
             <Top>
@@ -133,8 +155,7 @@ export default function HomePage() {
                                                 navigate(`/users/${user.id}`);
                                                 setSearchQuery("");
                                                 searchInputRef.current.blur();
-                                            }}
-                                        >
+                                            }}>
                                             <img src={user.imageUrl} alt={user.name} />
                                             <span>{user.name}</span>
                                         </SearchResultItem>
@@ -174,7 +195,6 @@ export default function HomePage() {
             )}
 
             {posts.map((p) => (
-               
                 <MyPosts key={p.id}>
                     <PostPencil onClick={() => {
                         setIsModalOpen(true);
@@ -197,13 +217,10 @@ export default function HomePage() {
                             <p>{p.likeCount} {p.likeCount === 1 ? "pessoa curtiu" : "pessoas curtiram"} sua foto!</p>
 
                             {hoveredPostId === p.id && p.likeCount > 0 && (
-                                <Tooltip>
+                                <Tooltip>  
                                     {(() => {
-
                                         const otherLikers = (Array.isArray(p.likers) ? p.likers : JSON.parse(p.likers || '[]'))
                                             .filter(name => name !== loggedInUser.name);
-
-
                                         const namesToShow = [];
                                         if (p.likedByUser) {
                                             namesToShow.push("Você");
@@ -225,9 +242,19 @@ export default function HomePage() {
                             )}
                         </LikeImage>
                         <CommentIcon onClick={() => setActiveCommentPostId(activeCommentPostId === p.id ? null : p.id)}>
-                           <p>{p.comments?.length || 0}</p>
+                            <ChatBubbleIcon />
+                            <p>
+                                {p.comments?.length || 0}{' '}
+                                {p.comments?.length === 1 ? 'comentário' : 'comentários'}
+                            </p>
                         </CommentIcon>
-
+                        <RepostIconContainer onClick={() => {
+                            setPostToRepost(p);
+                            setIsRepostModalOpen(true);
+                        }}>
+                            <RepostIcon />
+                            <p>{p.repostCount || 0} re-posts</p>
+                        </RepostIconContainer>
                         <DateContainer>
                             <p>{dayjs(p.createdAt).format("DD/MM/YYYY [às] HH[h]mm")}</p>
                         </DateContainer>
@@ -240,16 +267,24 @@ export default function HomePage() {
                             postId={p.id}
                             comments={p.comments || []}
                             userImage={loggedInUser.imageUrl}
+                            postAuthorId={loggedInUser.id}
+                            followingIds={(loggedInUser.following || []).map(f => f.id)}
                             token={token}
                             onCommentPosted={handleCommentPosted}
                         />
-                    )}
-                </MyPosts>
+                    )}  
+                </MyPosts>  
             ))}
 
             <Link to="/new-post">
                 <AddPostIcon />
             </Link>
+            <RepostModal
+                isOpen={isRepostModalOpen}
+                onClose={() => setIsRepostModalOpen(false)}
+                onConfirm={handleRepost}
+                isReposting={isReposting}
+            />
             <EditModal
                 isOpen={isModalOpen}
                 onClose={() => {
@@ -280,7 +315,6 @@ export default function HomePage() {
                                 }
                                 return;
                             }
-
                             const body = {};
                             if (editType === "image") body.imageUrl = newValue;
                             if (editType === "name") body.name = newValue;
@@ -298,11 +332,9 @@ export default function HomePage() {
                     } catch (err) {
                         console.error("Erro ao atualizar usuário:", err.response?.data || err.message);
                     }
-                }}
-                
-            />
-
-                    
+                }} 
+            />         
         </Page>
+        
     );
 };
