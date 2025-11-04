@@ -90,7 +90,7 @@ export const NewCommentForm = styled.form`
 
 export const SendCommentIcon = styled(IoPaperPlaneOutline)`
     position: absolute;
-    right: 10px;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
     width: 24px;

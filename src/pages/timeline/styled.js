@@ -8,7 +8,7 @@ export const MyLogo = styled.div`
     font-size: 60px;
     color: #0864f7;
     cursor: pointer; 
-    margin-right: auto;
+    margin: auto;
 `;
 
 export const FacebookIcon = styled(FaFacebookF)`
@@ -46,7 +46,7 @@ export const Topo = styled.div`
 `;
 
 export const ContainerPosts = styled.div`
-    margin-top: 20px;
+    margin-top: 120px;
 `;
 
 export const AuthorInfo = styled.div`
@@ -73,18 +73,18 @@ export const MyPosts = styled.div`
     padding: 20px;
     position: relative;
     border-radius: 5px;
-    margin-top: 120px;
+    margin-top: 20px;
     p {
         word-break: break-word; 
     }
 `;
 
 export const RepostBanner = styled.div`
-    background-color: #1E1E1E;
-    color: white;
+    background-color: #dbe6f8ff;
+    color: #0864f7;
     padding: 8px 12px;
-    border-radius: 8px 8px 0 0;
-    margin: 10px -20px 0 -20px;
+    border-radius: 5px 5px 0 0;
+    margin: -20px -20px 5px -20px;
     display: flex;
     align-items: center;
     gap: 6px;

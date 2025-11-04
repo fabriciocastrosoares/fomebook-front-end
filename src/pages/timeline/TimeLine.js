@@ -188,14 +188,16 @@ export default function TimeLine() {
         setIsReposting(true);
         try {
             await apiPosts.repostPost(token, postToRepost.id);
-            setPosts(currentPosts => currentPosts.map(p =>
-                p.id === postToRepost.id ? { ...p, repostCount: (p.repostCount || 0) + 1 } : p
-            ));
+            await fetchData();
             setIsRepostModalOpen(false);
             setPostToRepost(null);
         } catch (error) {
-            console.error("Error reposting:", error);
-            alert("Could not repost. Please try again.");
+            if (error.response?.status === 409) {
+                alert("Você já repostou este post.");
+            } else {
+                console.error("Error reposting:", error);
+                alert("Não foi possível repostar. Tente novamente.");
+            }
         } finally {
             setIsReposting(false);
         }
@@ -224,44 +226,44 @@ export default function TimeLine() {
                     <h1>omebook</h1>
                 </MyLogo>
                 <Options>
-                    
-                        <SearchWrapper >
-                            <SearchContainer>
-                                <SearchInput
-                                    ref={searchInputRef}
-                                    type="text"
-                                    placeholder="Buscar usuário..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <SearchIcon />
-                            </SearchContainer>
 
-                            {searchQuery.length >= 3 && (
-                                <SearchResultsList>
-                                    {searchResults.length > 0 ? (
-                                        searchResults.map(user => (
-                                            <SearchResultItem
-                                                key={user.id}
-                                                onMouseDown={() => {
-                                                    if (loggedInUser && user.id === loggedInUser.id) return;
-                                                    navigate(`/users/${user.id}`);
-                                                    setSearchQuery("");
-                                                    searchInputRef.current.blur();
-                                                }}>
-                                                <img src={user.imageUrl} alt={user.name} />
-                                                <span>{user.name}</span>
-                                            </SearchResultItem>
-                                        ))
-                                    ) : (
-                                        <SearchResultItem as="div" $unclickable={true}>
-                                            <span>Nenhum usuário encontrado...</span>
+                    <SearchWrapper >
+                        <SearchContainer>
+                            <SearchInput
+                                ref={searchInputRef}
+                                type="text"
+                                placeholder="Buscar usuário..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <SearchIcon />
+                        </SearchContainer>
+
+                        {searchQuery.length >= 3 && (
+                            <SearchResultsList>
+                                {searchResults.length > 0 ? (
+                                    searchResults.map(user => (
+                                        <SearchResultItem
+                                            key={user.id}
+                                            onMouseDown={() => {
+                                                if (loggedInUser && user.id === loggedInUser.id) return;
+                                                navigate(`/users/${user.id}`);
+                                                setSearchQuery("");
+                                                searchInputRef.current.blur();
+                                            }}>
+                                            <img src={user.imageUrl} alt={user.name} />
+                                            <span>{user.name}</span>
                                         </SearchResultItem>
-                                    )}
-                                </SearchResultsList>
-                            )}
-                        </SearchWrapper>
-                   
+                                    ))
+                                ) : (
+                                    <SearchResultItem as="div" $unclickable={true}>
+                                        <span>Nenhum usuário encontrado...</span>
+                                    </SearchResultItem>
+                                )}
+                            </SearchResultsList>
+                        )}
+                    </SearchWrapper>
+
                     <OptionLink onClick={() => navigate("/home-page")}>Meu Perfil</OptionLink>
                     <ExitIcon onClick={() => handleLogout(token, setName, setToken, navigate)} />
                 </Options>
@@ -279,13 +281,14 @@ export default function TimeLine() {
                         if (!post.author) return null;
 
                         return (<div key={`${post.id}-${post.repostedBy?.name || ''}`}>
-                            {post.repostedBy && (
+                            
+                            <MyPosts>
+                                {post.repostedBy && (
                                 <RepostBanner>
                                     <RepostIcon />
-                                    <p>Re-posted by <strong>{post.repostedBy.name === name ? 'you' : post.repostedBy.name}</strong></p>
+                                    <p>Re-postado por <strong>{post.repostedBy.name === name ? 'Você' : post.repostedBy.name}</strong></p>
                                 </RepostBanner>
                             )}
-                            <MyPosts>
 
                                 <AuthorInfo onClick={() => navigate(`/users/${post.author.id}`)}>
                                     <UserImage src={post.author.imageUrl} alt={post.author.name} />
@@ -322,8 +325,10 @@ export default function TimeLine() {
                                         <Tooltip>
                                             {(() => {
 
-                                                const otherLikers = (Array.isArray(post.likers) ? post.likers : JSON.parse(post.likers || '[]'))
-                                                    .filter(liker => liker.name !== name);
+                                                const likersArray = Array.isArray(post.likers) ? post.likers : JSON.parse(post.likers || '[]');
+                                                const otherLikers = likersArray
+                                                    .map(l => l.name || l) 
+                                                    .filter(likerName => likerName !== name);
 
 
                                                 const namesToShow = [];
