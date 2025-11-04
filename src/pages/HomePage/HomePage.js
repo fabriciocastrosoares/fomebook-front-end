@@ -125,8 +125,7 @@ export default function HomePage() {
             setIsReposting(false);
         }
     };
-
-
+ 
     return (
         <Page>
             <Top>
@@ -143,7 +142,6 @@ export default function HomePage() {
                             />
                             <SearchIcon />
                         </SearchContainer>
-
                         {searchQuery.length >= 3 && (
                             <SearchResultsList>
                                 {searchResults.length > 0 ? (
